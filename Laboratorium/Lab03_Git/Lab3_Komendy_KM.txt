@@ -1,0 +1,77 @@
+zad 1
+git commit
+gti commit
+
+zad 2 
+git checkout -b bugFix
+
+zad 3
+git checkout -b bugFix
+git commit
+git checkout main
+git commit
+git merge bugFix
+
+zad 4
+git checkout -b bugFix;
+git commit;
+git checkout main;
+git commit;
+git checkout bugFix;
+git rebase main;
+
+
+
+
+zad 1
+git checkout C4
+
+zad 2
+git checkout C4^
+
+zad 3
+git branch -f main C6
+git branch -f bugFix C0
+git checkout C1
+
+zad 4
+git reset local^
+git checkout pushed
+git revert pushed
+
+
+
+
+zad 1
+git cherry-pick C3 C4 C7
+
+zad 2
+git rebase -i master~4 --aboveAll
+
+
+
+
+
+zad 1
+git checkout main
+git cherry-pick C4
+
+zad 2
+git rebase -i caption~2
+git commit
+git rebase -i caption~2
+git branch -f master caption
+
+zad 3
+git checkout main
+git cherry-pick C2
+git commit
+git cherry-pick C3;
+
+zad 4
+git tag v0 C1;
+git tag v1 C2;
+git checkout C2;
+
+zad 5
+git commit;
