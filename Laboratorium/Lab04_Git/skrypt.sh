@@ -15,6 +15,14 @@ elif [[ "$1" == "--logs" ]]; then
         echo "Nazwa skryptu: $0" >> "$filename"
         echo "Data: $(date)" >> "$filename"
     done 
+elif [[ "$1" == "--help" ]]; then
+    echo "skrypt v.1.0"
+    echo
+    echo "Syntax: ./skrypt.sh [--date|--logs parm|--help]"
+    echo "options:"
+    echo "--date         show date"
+    echo "--logs parm    create logs times parm"
+    echo "--help         show this info"
 else
     echo "Blad"
 fi
