@@ -1,0 +1,3 @@
+([('start',
+   '/Users/kmarchwicki/Documents/GitHub/NarzPrIT/Laboratorium/Lab678_Projekt/dist/start',
+   'EXECUTABLE')],)
