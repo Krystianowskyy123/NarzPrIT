@@ -3,6 +3,7 @@ import json
 import os
 import yaml
 import xml.etree.ElementTree as ET
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QMessageBox
 
 
 def verify_json(file_path):
@@ -119,6 +120,84 @@ def convert_file(input_path, output_path):
     return True
 
 
+class ConverterApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('File Converter')
+
+        layout = QVBoxLayout()
+
+        self.input_label = QLabel('Select Input File:')
+        layout.addWidget(self.input_label)
+
+        self.input_button = QPushButton('Browse...')
+        self.input_button.clicked.connect(self.select_input_file)
+        layout.addWidget(self.input_button)
+
+        self.output_label = QLabel('Select Output File:')
+        layout.addWidget(self.output_label)
+
+        self.output_button = QPushButton('Browse...')
+        self.output_button.clicked.connect(self.select_output_file)
+        layout.addWidget(self.output_button)
+
+        self.convert_button = QPushButton('Convert')
+        self.convert_button.clicked.connect(self.convert_files)
+        layout.addWidget(self.convert_button)
+
+        self.setLayout(layout)
+        self.input_path = None
+        self.output_path = None
+
+    def select_input_file(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select Input File", "",
+                                                   "All Files (*);;JSON Files (*.json);;YAML Files (*.yml *.yaml);;XML Files (*.xml)",
+                                                   options=options)
+        if file_path:
+            self.input_path = file_path
+            self.input_label.setText(f"Input File: {file_path}")
+
+    def select_output_file(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(self, "Select Output File", "",
+                                                   "JSON Files (*.json);;YAML Files (*.yml *.yaml);;XML Files (*.xml)",
+                                                   options=options)
+        if file_path:
+            self.output_path = file_path
+            self.output_label.setText(f"Output File: {file_path}")
+
+    def convert_files(self):
+        if not self.input_path or not self.output_path:
+            QMessageBox.warning(self, "Warning", "Please select both input and output files.")
+            return
+
+        input_type = detect_file_type(self.input_path)
+        if input_type == '.json':
+            if not verify_json(self.input_path):
+                QMessageBox.critical(self, "Error", "Invalid JSON file.")
+                return
+        elif input_type in ['.yml', '.yaml']:
+            if not verify_yml(self.input_path):
+                QMessageBox.critical(self, "Error", "Invalid YAML file.")
+                return
+        elif input_type == '.xml':
+            if not verify_xml(self.input_path):
+                QMessageBox.critical(self, "Error", "Invalid XML file.")
+                return
+        else:
+            QMessageBox.critical(self, "Error", f"Unsupported input file type: {input_type}")
+            return
+
+        if convert_file(self.input_path, self.output_path):
+            QMessageBox.information(self, "Success", "File converted successfully.")
+        else:
+            QMessageBox.critical(self, "Error", "Failed to convert file.")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Verify and convert JSON, YAML, or XML files.')
     parser.add_argument('--verify-json', type=str, help='Path to the JSON file to be verified.')
@@ -149,7 +228,10 @@ def main():
         else:
             print(f"Error: Unsupported file type '{input_type}' for input file '{input_path}'.")
     else:
-        print("Error: No operation specified. Use --verify-json, --verify-yml, --verify-xml, or --convert.")
+        app = QApplication([])
+        converter_app = ConverterApp()
+        converter_app.show()
+        app.exec_()
 
 
 if __name__ == '__main__':
